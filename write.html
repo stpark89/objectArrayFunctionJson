@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>주소록 글쓰기</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <div class="row">
+      <div class="col-sm-12">
+        <h5>주소록 등록</h5>
+        <form>
+            <div class="form-group">
+              <label for="firstname">Firstname:</label>
+              <input type="text" class="form-control" placeholder="Enter email" id="firstname"/>
+            </div>
+            <div class="form-group">
+              <label for="lastname">Lastname:</label>
+              <input type="text" class="form-control" placeholder="Enter password" id="lastname"/>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" placeholder="Enter password" id="email"/>
+            </div>
+            <button type="button" id="btnCancle" class="btn btn-danger">취소</button>
+            <button type="button" id="btnWrite" class="btn btn-primary">등록</button>
+          </form> 
+       </div>
+   </div>
+</div>
+
+<script>
+
+    window.onload = () => {
+
+        //등록 버튼
+        const writeBtn = document.getElementById('btnWrite');
+        writeBtn.onclick = () => {
+
+            let firstName = document.getElementById('firstname').value;
+            let lastName = document.getElementById('lastname').value;
+            let email = document.getElementById('email').value;
+
+            if(firstName == ''){
+              alert('FirstName 입력 필요');
+              document.getElementById("firstname").focus();
+              return false;
+            }
+
+            if(lastName == ''){
+              alert('lastname 입력 필요');
+              document.getElementById("lastname").focus();
+              return false;
+            }
+
+            if(email == ''){
+              alert('email 입력 필요');
+              document.getElementById("email").focus();
+              return false;
+            }
+
+            let obj = {
+               firstName : firstName
+              ,lastName : lastName
+              ,email : email 
+            }
+
+
+            // 데이터 담아놓는 배열 객체
+            let boardArray = [];
+            if(JSON.parse(window.localStorage.getItem('boardList')) != null){
+                boardArray = [...JSON.parse(window.localStorage.getItem('boardList'))].concat(obj);
+            }else{
+                boardArray.push(obj);
+            }
+            
+            window.localStorage.setItem('boardList', JSON.stringify(boardArray));
+            alert('등록되었습니다.');
+            location.href = '/index.html';
+        }
+
+
+        // 취소 버튼 
+        const cancleBtn = document.getElementById('btnCancle');
+        cancleBtn.onclick = () => {
+          // ok 누르면 true, 아니면 false. true 일경우 메인페이지로 이동
+          confirm('주소록 페이지로 돌아가시겠습니까 ?') ? location.href='/index.html' : '';
+        }
+
+    }
+
+</script>
+
+</body>
+</html>    
