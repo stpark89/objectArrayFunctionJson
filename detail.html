@@ -39,6 +39,7 @@
                 <input type="text" class="form-control" id="txbEmail"/>
             </div>
             <div id="detailBtnDiv" class="mt-2">
+                <button type="button" id="btnBack" class="btn btn-dark">목록</button>
                 <button type="button" id="btnModify" class="btn btn-primary">수정</button>
                 <button type="button" id="btnDelete" class="btn btn-danger">삭제</button>
             </div>
@@ -63,11 +64,15 @@
             
                 console.log("SetViewText");    
                 dataList = [...JSON.parse(window.localStorage.getItem('boardList'))];
+
+                console.log(dataList);
+
                 // 함수 만듬 
-                const detailInfo = () => dataList.filter(v => v.id == paramId)[0];
-                document.getElementById('firstName').innerText = detailInfo().firstName;
-                document.getElementById('lastName').innerText = detailInfo().lastName;
-                document.getElementById('email').innerText = detailInfo().email;
+                const detailInfo = dataList.filter(v => v.id == paramId)[0];
+                document.getElementById('firstName').innerText = detailInfo.firstName;
+                document.getElementById('lastName').innerText = detailInfo.lastName;
+                document.getElementById('email').innerText = detailInfo.email;
+                debugger;
             }
 
             
@@ -185,6 +190,12 @@
 
 
                     setViewText();
+            }
+
+            // 목록
+            const btnBack = document.getElementById('btnBack');
+            btnBack.onclick = () => {
+                location.href="index.html";
             }
 
         }

@@ -80,7 +80,7 @@
                 const tmp = [...JSON.parse(window.localStorage.getItem('boardList'))];
                 
                 // 아이디 증가
-                obj.id = tmp[tmp.length-1].id+1;
+                obj.id = Number(tmp[tmp.length-1].id+1);
 
                 boardArray = [...JSON.parse(window.localStorage.getItem('boardList'))].concat(obj);
             }else{
