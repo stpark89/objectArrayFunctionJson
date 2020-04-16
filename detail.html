@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>주소록 상세보기</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+
+    <div class="container text-center">
+        <h2>주소록 상세</h2>
+        <p>등록된 상세 정보 보기</p>
+        <div class="card" style="width:400px; margin-left:30%;">
+          <img class="card-img-top" src="img_avatar1.png" alt="Card image" style="width:100%">
+          <div class="card-body">
+            <h4 class="card-title">상세정보</h4>
+            <div id="detailDiv">
+                <p class="card-text">
+                    <label>첫번째 이름 : <span id="firstName"></span></label>
+                    <br/>
+                    <label>두번째 이름 : <span id="lastName"></span></label>
+                    <br/>
+                    <label>이메일 : <span id="email"></span></label>
+                </p>
+            </div>
+            <div id="modifyDiv" class="text-center" style="display : none;">
+                <label>첫번째 이름 : </label>
+                <input type="text" class="form-control" id="txbFirstName"/>
+                <br/>
+                <label>두번째 이름 : </label>
+                <input type="text" class="form-control" id="txbLastName"/>
+                <br/>
+                <label>이메일 : </label>
+                <input type="text" class="form-control" id="txbEmail"/>
+            </div>
+            <div id="detailBtnDiv" class="mt-2">
+                <button type="button" id="btnModify" class="btn btn-primary">수정</button>
+                <button type="button" id="btnDelete" class="btn btn-danger">삭제</button>
+            </div>
+            <!-- 수정 버튼 눌렀을때 -->            
+            <div id="modifyBtnDiv" class="mt-2" style="display: none;">
+                <button type="button" id="btnModifyInsert" class="btn btn-primary">등록</button>
+                <button type="button" id="btnCancle" class="btn btn-danger">취소</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <script>
+
+        window.onload = () => {
+
+            // 등록되어있는 주소록 정보들.
+            let dataList = [];
+            // 파라미터로 넘어온 데이터 뽑는 함수 
+            const paramId = getParameterByName('id');
+            const setViewText = () => {
+            
+                console.log("SetViewText");    
+                dataList = [...JSON.parse(window.localStorage.getItem('boardList'))];
+                // 함수 만듬 
+                const detailInfo = () => dataList.filter(v => v.id == paramId)[0];
+                document.getElementById('firstName').innerText = detailInfo().firstName;
+                document.getElementById('lastName').innerText = detailInfo().lastName;
+                document.getElementById('email').innerText = detailInfo().email;
+            }
+
+            
+            // 화면에 데이터 매핑
+            setViewText();
+   
+
+            // 삭제 버튼 클릭시
+            const deleteFn = document.getElementById('btnDelete');
+            deleteFn.onclick = () => {
+
+                const deleteArray = dataList.filter(v => v.id != getParameterByName('id'));
+                confirm('삭제하시겠습니까 ?') ? window.localStorage.setItem('boardList', JSON.stringify(deleteArray)) : '';
+                location.href="index.html";
+            }
+
+
+            // 수정 버튼 클릭시 1.수정페이지로 이동하는 방법, 2.상세페이지를 수정페이지로 변경하는 방법
+            const modifyBtn = document.getElementById('btnModify');
+            modifyBtn.onclick = () => {
+                
+                const modifyDiv = document.getElementById('modifyDiv');
+                modifyDiv.style.display = 'block';
+
+                const detailDiv = document.getElementById('detailDiv');    
+                detailDiv.style.display = 'none';
+
+
+                const detailBtnDiv = document.getElementById('detailBtnDiv');
+                detailBtnDiv.style.display = 'none';
+
+                const modifyBtnDiv = document.getElementById('modifyBtnDiv');
+                modifyBtnDiv.style.display = 'block';
+
+            }
+
+            // 취소
+            const btnCancle = document.getElementById('btnCancle');
+            btnCancle.onclick = () => {
+
+                const confirmData = confirm('취소 하시겠습니까 ? 수정된내용이 사라집니다.');
+                if(confirmData){
+                    const modifyDiv = document.getElementById('modifyDiv');
+                    modifyDiv.style.display = 'none';
+
+                    const detailDiv = document.getElementById('detailDiv');    
+                    detailDiv.style.display = 'block';
+
+                    const modifyBtnDiv = document.getElementById('modifyBtnDiv');
+                    modifyBtnDiv.style.display = 'none';    
+
+                    const detailBtnDiv = document.getElementById('detailBtnDiv');
+                    detailBtnDiv.style.display = 'block';
+
+                }
+            }
+
+            // 등록
+            const btnModifyInsert = document.getElementById('btnModifyInsert');
+            btnModifyInsert.onclick = () => {
+
+
+                const modifyFirstName = document.getElementById('txbFirstName').value;
+                const modifyLastName = document.getElementById('txbLastName').value;
+                const modifyEmail = document.getElementById('txbEmail').value;
+                
+                
+                if(modifyFirstName == ''){
+                    alert('FirstName 입력 필요');
+                    document.getElementById("txbFirstName").focus();
+                    return false;
+                }
+
+                if(modifyLastName == ''){
+                    alert('lastname 입력 필요');
+                    document.getElementById("txbLastName").focus();
+                    return false;
+                }
+
+                if(modifyEmail == ''){
+                    alert('email 입력 필요');
+                    document.getElementById("txbEmail").focus();
+                    return false;
+                }
+
+                const changeObj = {
+                    id : paramId,
+                    firstName : modifyFirstName,
+                    lastName : modifyLastName,
+                    email : modifyEmail
+                }
+           
+                const changeDataList = dataList.map(v => {
+                    if(v.id == paramId) {
+                        return changeObj;
+                    }
+                    return v;
+                });
+
+                alert('수정 성공');
+                
+                window.localStorage.setItem('boardList', JSON.stringify(changeDataList));
+
+                const modifyDiv = document.getElementById('modifyDiv');
+                    modifyDiv.style.display = 'none';
+
+                    const detailDiv = document.getElementById('detailDiv');    
+                    detailDiv.style.display = 'block';
+
+                    const modifyBtnDiv = document.getElementById('modifyBtnDiv');
+                    modifyBtnDiv.style.display = 'none';    
+
+                    const detailBtnDiv = document.getElementById('detailBtnDiv');
+                    detailBtnDiv.style.display = 'block';
+
+
+                    setViewText();
+            }
+
+        }
+
+
+        // QueryString Data 뽑는 함수
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+    </script>
+
+</body>
+</html>
